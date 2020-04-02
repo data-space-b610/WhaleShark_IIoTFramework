@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package ksb.csle.custom.proto;
+
+import "ksb/csle/custom/proto/custom_operator_proto.proto";
+
+message CustomOperatorInfo {
+    required int32 id = 1;
+    required int32 prevId = 2;
+    required string clsName = 4;
+
+    oneof oneof_operators {
+        GroupbyInfo groupby = 10;
+    }
+}
+
+message MySelectColumnsWithFileInfo {
+    required string columnIdPath = 1;
+}

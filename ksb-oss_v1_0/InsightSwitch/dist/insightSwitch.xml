@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<entry key="pc.sensingPeriod">10000</entry>
+
+	<entry key="pc.friendlyNamePrefixList">WeMo</entry>
+	<!-- <entry key="pc.friendlyNamePrefixList">WeMo.Insight.933</entry>  -->
+
+</properties>

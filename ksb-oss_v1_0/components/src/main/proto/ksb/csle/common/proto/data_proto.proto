@@ -1,0 +1,409 @@
+//syntax = "proto2";
+//
+//package ksb.csle.common.proto;
+//
+//
+///**
+// * TODO : Define Proto messages for Common type.
+// */
+//message SubParameter {
+//    required string key = 1;
+//    required string value = 2;
+//}
+//
+//enum Type {
+//    COMMON = 0;
+//    CLEANING = 1;
+//    INTEGRATION = 2;
+//    REDUCTION = 3;
+//    TRANSFORMATION = 4;
+//}
+//
+///**
+// * TODO : Define Proto messages for Data Cleaning Function.
+// */
+//// Defines params to filter in a given column.
+//message FilterInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    required string colName = 4;
+//    required Condition condition = 5 [default = EQUAL];
+//    optional int32 value = 6;
+//    optional string pattern = 7;
+//    enum Condition {
+//      EQUAL = 0;
+//      LESS_THAN = 1;
+//      LARGE_THAN = 2;
+//      LESS_EQUAL = 3;
+//      LARGE_EQUAL = 4;
+//      EXIST = 5;
+//      LIKE = 6;
+//    }
+//}
+//
+//// Define params to filter the selected column elements using spark SQL.
+//message FilterUsingSqlInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    required int32 selectedColumnId = 4;
+//    repeated SubParameter subParam = 5;
+//}
+//
+//// Defines params to filter the selected columns in a dataframe.
+//message FilterSpecificColumnsInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    repeated int32 selectedColumnId = 4;
+//}
+//
+//// Defines params to impute missing values in a dataframe.
+//message MissingValueImputationInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    required Scope scope = 4 [default = SCOPE_SELECTED];
+//    repeated int32 selectedColumnId = 5;
+//    required Method method = 6 [default = SPECIFIC_VALUE];
+//    required How how = 7 [default = HOW_ANY]; // for IM
+//    repeated SubParameter subParam = 8 ; // for method SPECIFIC_VALUE
+//    enum Scope {
+//      SCOPE_ALL = 0;
+//      SCOPE_SELECTED = 1;
+//    }
+//    enum Method {
+//      IM = 0;
+//      SPECIFIC_VALUE = 1;
+//      MEDIAN = 2;
+//      MEAN = 3;
+//    }
+//    enum How {
+//      HOW_ANY = 0;
+//      HOW_ALL = 1;
+//    }
+//}
+//
+///**
+// * TODO : Define Proto messages for Data Reduction Function.
+// */
+//// Defines params to remove the selected columns in a dataframe.
+//message RemoveSelectedColumnsInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    repeated int32 selectedColumnId = 4;
+//}
+//
+//// Defines params to aggregate the time window column in a dataframe.
+//message AggregateTimeWindowInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    required Scope scope = 4 [default = SCOPE_ALL];
+//    repeated int32 selectedColumnId = 5;
+//    repeated SubParameter subParam = 6;
+//    enum Scope {
+//      SCOPE_ALL = 0;
+//      SCOPE_SELECTED = 1;
+//    }
+//}
+//
+//// Defines params to select columns in a dataframe.
+//message SelectColumnsInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    repeated int32 selectedColumnId = 4;
+//    repeated SubParameter subParam = 5;
+//}
+//
+///**
+// * TODO : Define Proto messages for Data integration Function.
+// */
+//// Defines params to groupby with key-value column info.
+//message GroupbyInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    required string keyColName = 4;
+//    required string valColName = 5;
+//    enum GroupbyOp {
+//      SUM = 0;
+//      COUNT = 1;
+//    }
+//    required GroupbyOp groupby = 6;
+//}
+//
+//// Defines params to reshape after concatenating with the selected columns.
+//message ReshapeWithConcatInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    repeated int32 selectedColumnId = 4;
+//    required string delimiter = 5;
+//    required string valueColName = 6;
+//    required Condition condition = 7 [default = KEEP_ORIGINAL_AND_RESULT];
+//    enum Condition {
+//      KEEP_ORIGINAL_AND_RESULT = 0;
+//      REPLACE_SELECTED_WITH_RESULT = 1;
+//      REFINEMENT_RESULT_ONLY = 2;
+//    }
+//}
+//
+//// Defines params to pivot the elements of selected column.
+//message PivotInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    required int32 selectedColumnId = 4;
+//    required string groupByColumn = 5;
+//    required string valueColumn = 6;
+//    required Method method = 7 [default = AVG];
+//    enum Method {
+//      AVG = 0;
+//      SUM = 1;
+//    }
+//}
+//
+//// Defines params to add time index column in a dataframe.
+//message AddTimeIndexColumnInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    required int32 userTimeIndexColumnId = 4;
+//    required string userTimeIndexPattern = 5;
+//}
+//
+//// Defines params to order by a specific column in a dataframe.
+//message OrderByColumnInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    required int32 selectedColumnId = 4;
+//    required Method method = 5 [default = ASC];
+//    enum Method {
+//      ASC = 0;
+//      DESC = 1;
+//    }
+//}
+//
+///**
+// * TODO : Define Proto messages for Data Transformation Function
+// */
+//// Defines params to rescale the selected columns individually to a common range
+//// [min, max].
+//message MinMaxScalingInfo {
+//    required int32 opId = 2;
+//    optional Type type = 3;
+//    repeated int32 selectedColumnId = 4;
+//    required string max = 5;
+//    required string min = 6;
+//    required bool withMinMaxRange = 7 [default = false];
+//    optional string maxRealValue = 8;
+//    optional string minRealValue = 9;
+//}
+//
+///**
+// * TODO : Define Proto messages for Data EqualWidthBinning function.
+// */
+//message EqualWidthBinningInfo {
+//    required int32 opId = 1;
+//    required Type type = 2;
+//    repeated int32 selectedColumnId = 3;
+//    required int32 numberOfBins = 4;
+//    required OutputType outputType = 5 [default = NEW_COLUMN];
+//    enum OutputType {
+//      NEW_COLUMN = 0;
+//      VALUE_CHANGE = 1;
+//    }
+//}
+//
+///**
+// * TODO : Define Proto messages for Data EqualDepthBinning function.
+// */
+//message EqualDepthBinningInfo {
+//    required int32 opId = 1;
+//    required Type type = 2;
+//    repeated int32 selectedColumnId = 3;
+//    required int32 numberOfBins = 4;
+//    required OutputType outputType = 5 [default = NEW_COLUMN];
+//    enum OutputType {
+//      NEW_COLUMN = 0;
+//      VALUE_CHANGE = 1;
+//    }
+//}
+//
+///**
+// * TODO : Define Proto messages for Data KMeans function.
+// */
+//message KMeansInfo {
+//    required int32 opId = 1;
+//    required Type type = 2;
+//    required int32 k_value = 3 [default = 2];
+//    required int32 maxIterations = 4 [default = 100];
+//    required int32 maxRuns = 5 [default = 10];
+//    optional int64 seed = 6;
+//}
+//
+///**
+// * TODO : Define Proto messages for Data SimpleRandomSampling function.
+// */
+//message SampleSimpleRandomInfo {
+//    required int32 opId = 1;
+//    required Type type = 2;
+//    required double fraction = 3;
+//    required bool withReplacement = 4 [default = false];
+//    optional int64 seed = 5;
+//}
+//
+///**
+// * TODO : Define Proto messages for Data SampleStratified function.
+// */
+//message SampleStratifiedInfo {
+//    required int32 opId = 1;
+//    required Type type = 2;
+//    required int32 selectedColumnId = 3;
+//    repeated FractionFieldEntry fractions = 4;
+//    required bool withReplacement = 5 [default = false];
+//    optional int64 seed = 6;
+//}
+//
+//message FractionFieldEntry {
+//    required string key = 1;
+//    required double value = 2;
+//}
+//
+///**
+// * TODO : Define Proto messages for Data Transpose function.
+// */
+//message TransposeInfo {
+//    required int32 opId = 1;
+//    required Type type = 2;
+//    required string selectedColumnName = 3;
+//}
+//
+//message MakeTimeWindowRowsInfo {
+//    required int32 opId = 1;
+//    required Type type = 2;
+//    required int32 timeWindowValue = 3;
+//}
+//
+//message SelectTimeWindowRowsInfo {
+//    required int32 opId = 1;
+//    required Type type = 2;
+//    required int32 timeWindowValue = 3;
+//}
+//
+//
+//message PrincipalComponentAnalysisInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//  required int32 k_value = 3 [default = 2];
+//}
+//
+//message LinearRegressionInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//  required string labelName = 3;
+//  required double regParam = 4;
+//  required double elasticNetParam = 5;
+//  required int32 maxIter = 6;
+//  required double tolerance = 7;
+//}
+//
+//message AggregateInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//  repeated AttributeEntry attributes = 3;
+//  repeated string groupByAttributeName = 4;
+//}
+//
+//message AttributeEntry {
+//  required string attributeName = 1;
+//  required FunctionType functionType = 2;
+//  enum FunctionType {
+//    AVERAGE = 0;
+//    CONCATENATION = 1;
+//    COUNT = 2;
+//    SUM = 3;
+//  }
+//}
+//
+//message KMedoidsInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//  required int32 k_value = 3 [default = 2];
+//  required int32 maxIter = 4 [default = 100];
+//  optional int64 seed = 5;
+//}
+//
+//message AgglomerativeClusteringInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//  required int32 numberOfClusters = 3;
+//  required LinkType link = 4 [default = SINGLE];
+//  enum LinkType {
+//    SINGLE = 0;
+//    COMPLETE = 1;
+//    AVERAGE = 2;
+//  }
+//}
+//
+//message DBSCANInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//  required double eps = 3;
+//  required int32 minPts = 4;
+//}
+//
+//message EMClusteringInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//  required int32 k_value = 3 [default = 2];
+//  required int32 maxIter = 4;
+//}
+//
+//message GeneralizedLinearRegressionInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//  required string labelName = 3;
+//  required FamilyType familyType = 4 [default = GAUSSIAN];
+//  required LinkType linkType = 5 [default = IDENTITY];
+//  required int32 maxIter = 6;
+//  enum FamilyType {
+//    GAUSSIAN = 0;
+//    BINOMIAL = 1;
+//    POISSON = 2;
+//    GAMMA = 3;
+//  }
+//  enum LinkType {
+//    IDENTITY = 0;
+//    LOG = 1;
+//    INVERSE = 2;
+//    LOGIT = 3;
+//    PROBIT = 4;
+//    CLOGLOG = 5;
+//    SQRT = 6;
+//  }
+//}
+//
+//message DecisionTreeInductionInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//  required string labelName = 3;
+//  required int32 maxDepth = 4;
+//  required double minInfoGain = 5;
+//  required int32 minInstancesPerNode = 6 [default = 1];
+//  required int32 maxBins = 7;
+//  required bool cacheNodeIds = 8 [default = false];
+//  required int32 checkpointInterval = 9 [default = 10];
+//  required double fractionTest = 10;
+//  required int64 dataSplitSeed = 11;
+//}
+//
+//message StepwiseForwardSelectionInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//  required string labelName = 3;
+//}
+//
+//message StepwiseBackwardEliminationInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//  required string labelName = 3;
+//}
+//
+//message SupportVectorClusteringInfo {
+//  required int32 opId = 1;
+//  required Type type = 2;
+//}

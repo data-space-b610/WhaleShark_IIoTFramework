@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>ksb</groupId>
+  <artifactId>csle</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>CSLE Parent POM</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <rootDir>${session.executionRootDirectory}</rootDir>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <hadoop.version>2.7.3</hadoop.version>
+    <java.version>1.7</java.version>
+    <maven.version.min>3.0.5</maven.version.min>
+    <scala.minor.version>2.11</scala.minor.version>
+    <scala.complete.version>${scala.minor.version}.1</scala.complete.version>
+  </properties>
+	
+  <build>
+    <plugins>
+<!-- Scalastyle for Static Analysis -->	  
+	  <plugin>
+		<groupId>org.scalastyle</groupId>
+		<artifactId>scalastyle-maven-plugin</artifactId>
+		<version>1.0.0</version>
+		<configuration>
+		  <verbose>false</verbose>
+		  <failOnViolation>true</failOnViolation>
+		  <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <failOnWarning>false</failOnWarning>
+		  <sourceDirectories>
+			<dir>${session.executionRootDirectory}/src/main/scala</dir>
+			<dir>${session.executionRootDirectory}/common/src/main/scala</dir>
+			<dir>${session.executionRootDirectory}/ingestion/src/main/scala</dir>
+			<dir>${session.executionRootDirectory}/data/src/main/scala</dir>
+			<dir>${session.executionRootDirectory}/didentification/src/main/scala</dir>
+			<dir>${session.executionRootDirectory}/analysis/src/main/scala</dir>
+			<dir>${session.executionRootDirectory}/evaluation/src/main/scala</dir>
+			<dir>${session.executionRootDirectory}/service/src/main/scala</dir>
+			<dir>${session.executionRootDirectory}/knowledge/src/main/scala</dir>
+			<dir>${session.executionRootDirectory}/KBE</dir>
+			<dir>${session.executionRootDirectory}/orchestrator/src/main/scala</dir>
+			<dir>${session.executionRootDirectory}/examples/src/main/scala</dir>
+			<dir>${session.executionRootDirectory}/tools/src/main/scala</dir>
+		  </sourceDirectories>
+          <testSourceDirectory>${project.basedir}/src/test/scala</testSourceDirectory>
+          <configLocation>${session.executionRootDirectory}/scalastyle_config.xml</configLocation>
+          <outputFile>${session.executionRootDirectory}/scalastyle-output.xml</outputFile>
+          <outputEncoding>UTF-8</outputEncoding>
+        </configuration>
+        <executions>
+		  <execution>
+			<goals>
+			  <goal>check</goal>
+			</goals>
+		  </execution>
+        </executions>
+      </plugin>
+	
+    </plugins>
+  </build>
+ </project>

@@ -1,0 +1,15 @@
+*.jar
+target/
+.idea/
+.settings/
+.cache-main
+.cache-tests
+.classpath
+.project
+datasets/
+part-*
+.part-*
+*.csv
+*.json
+ksb-oss_v1_0/examples/model/
+ksb-oss_v1_0/examples/models/

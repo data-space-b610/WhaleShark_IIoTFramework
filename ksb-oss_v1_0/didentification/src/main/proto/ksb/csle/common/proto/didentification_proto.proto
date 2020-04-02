@@ -1,0 +1,171 @@
+syntax = "proto2";
+
+package ksb.csle.common.proto;
+
+message DidentInfo {
+	required InputData inputData = 1;
+	repeated BasicAnonymization basicAnonymization = 2;
+	repeated SyntaticAnonymization syntaticAnonymization = 3;
+}
+
+message InputData {
+	required string operId = 1;
+	required DataDescript dataDescript = 3;
+
+	message DataDescript {
+		optional string delimiter = 1 [default = ","];
+ 		required string inDataPath = 2;
+ 		optional int32 columnCount = 3;
+		repeated ColumnDescript columnDescript = 4;
+
+		message ColumnDescript {
+			required int32 columnId = 1;
+			optional string columnName = 2;
+			optional ColumnType columnType = 3;
+			optional AttrType attrType = 4;
+			optional ConfHierarchy hierarchy = 5;
+		}
+
+		enum ColumnType {
+			STRING = 0;
+			BOOLEAN = 1;
+			BYTE = 2;
+			INTEGER = 3;
+			LONG = 4;
+			FLOAT = 5;
+			DOUBLE = 6;
+			TIMESTAMP = 7;
+		}
+
+		enum AttrType {
+			IDENTIFIER = 0;
+			QUASIIDENTIFIER = 1;
+			SENSITIVE = 2;
+			NONSENSETIVE = 3;
+		}
+
+		message ConfHierarchy {
+			optional string inHierarchyPath = 1;
+		}
+
+	}
+}
+
+message BasicAnonymization {
+	required string operId = 1;
+	repeated int32 selectedColumnId = 2;
+	required DIdentType type = 3;
+	required int32 method = 4;
+	repeated Option option = 5;
+
+	enum DIdentType {
+		HEURISTIC = 0;
+		ENCRYPTION = 1;
+		SWAPPING = 2;
+		AGGREGATION = 3;
+		PARTIALAGGR = 4;
+		ROUNDING = 5;
+		REARRANGEMENT = 6;
+		IDENREDUCTION = 7;
+		IDENPARTIALREDUCTION = 8;
+		RECORDREDUCTION = 9;
+		QUASIREDUCTION = 10;
+		HIDING = 11;
+		RANDOMROUNDING = 12;
+		DATARANGE = 13;
+		RANDOMNOISE = 14;
+		BLANKIMPUTE = 15;
+	}
+
+	// for Heuristic and RandomNoise Algorithms
+	enum RandomMethod {
+		ALPHABET = 0;
+		NUMBER = 1;
+		MIXED = 2;
+	}
+
+	enum EncryptionMethod {
+		SHA1 = 0;
+	}
+
+	enum RoundingMethod {
+		ROUND = 0;
+		ROUND_UP = 1;
+		ROUND_DOWN = 2;
+	}
+
+	enum AggregationMethod {
+		MIN = 0;
+		AVG = 1;
+		MAX = 2;
+		MEDIAN = 3;
+	}
+
+	// for IdenReduction, QuasiReduction, and RecordReduction Algorithms
+	enum ReductionMethod {
+		DELETE = 0;
+		REPLACE = 1;
+	}
+
+	enum BlankImputeMethod {
+		REPLACE_BLANK = 0;
+		REPLACE_STAR = 1;
+		REPLACE_UNDERBAR = 2;
+	}
+}
+
+message SyntaticAnonymization {
+	required string operId = 1;
+	required SyntaticDIdentType type = 2;
+	optional KAnonymity kAnonymity = 3;
+	optional LDiversity lDiversity = 4;
+	optional TCloseness tCloseness = 5;
+	repeated Option option = 6;
+
+	enum SyntaticDIdentType {
+		KANONYMITY = 0;
+		LDIVERSITY = 1;
+		TCLOSENESS = 2;
+	}
+
+	message KAnonymity {
+		required KAnonymityMethod method = 1;
+		required int32 k = 2;
+		optional double suppThreshold = 3;
+	}
+
+	message LDiversity {
+		required LDiversityMethod method = 1;
+		required int32 k = 2;
+		required int32 l = 3;
+		optional int32 c = 4;
+		optional double suppThreshold = 5;
+	}
+
+	message TCloseness {
+		required TClosenessMethod method = 1;
+		required int32 t = 2;
+		optional double suppThreshold = 3;
+	}
+
+	enum KAnonymityMethod {
+		BASIC_K = 0;
+	}
+
+	enum LDiversityMethod {
+		BASIC_L = 0;
+		PROBABLIC_L = 1;
+		ENTROPY_L = 2;
+		CL_DIVERSITY = 3;
+	}
+
+	enum TClosenessMethod {
+		BASIC_T = 0;
+	}
+}
+
+message Option {
+	required string key = 1;
+	required string value = 2;
+}
+

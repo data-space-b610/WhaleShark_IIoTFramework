@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="ksb-JavaRuleset"
+		 xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    <description>This ruleset is used for code inspection of KSB Java coding guideline</description>
+
+	
+	<rule name="LongVariable" language="java" message="Rule Violation(GR1): Avoid excessively long variable names like {0}" class="net.sourceforge.pmd.lang.rule.XPathRule">
+	  <description>
+Fields, formal arguments, or local variable names that are too long can make the code difficult to follow.
+	  </description>
+	  <priority>3</priority>
+	  <properties>
+          <property name="minimum" type="Integer" description="The variable length reporting threshold" min="1" max="100" value="17"/>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+//VariableDeclaratorId[string-length(@Image) > $minimum]
+                  ]]>
+              </value>
+          </property>
+      </properties>
+	  <example>
+<![CDATA[
+public class Something {
+	int reallyLongIntName = -3;  			// VIOLATION - Field
+	public static void main( String argumentsList[] ) { // VIOLATION - Formal
+		int otherReallyLongName = -5; 		// VIOLATION - Local
+		for (int interestingIntIndex = 0;	// VIOLATION - For
+             interestingIntIndex < 10;
+             interestingIntIndex ++ ) {
+    }
+}
+]]>
+	  </example>
+	</rule>
+
+	
+	<rule name="ExcessiveClassLength" message="Rule Violation(GR3): Avoid really long classes." class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveClassLengthRule">
+	  <description>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+	  </description>
+	  <priority>3</priority>
+	  <example>
+<![CDATA[
+public class Foo {
+	public void bar1() {
+    // 1000 lines of code
+	}
+	public void bar2() {
+    // 1000 lines of code
+	}
+    public void bar3() {
+    // 1000 lines of code
+	}
+	
+	
+    public void barN() {
+    // 1000 lines of code
+	}
+}
+]]>
+	  </example>
+	</rule>
+
+	
+	<rule name="CommentRequired" message="Rule Violation(GR6 or GR7): Comment is required." class="net.sourceforge.pmd.lang.java.rule.comments.CommentRequiredRule">
+      <description>
+Denotes whether comments are required (or unwanted) for specific language elements.
+      </description>
+	  <priority>3</priority>
+	  <properties>
+            <property name="enumCommentRequirement" value="Required"/>
+            <property name="protectedMethodCommentRequirement" value="Ignored"/>
+            <property name="publicMethodCommentRequirement" value="Ignored"/>
+            <property name="fieldCommentRequirement" value="Ignored"/>
+			<property name="headerCommentRequirement" value="Required"/>
+        </properties>
+	  <example>
+<![CDATA[
+/**
+* 
+*
+* @author George Bush
+*/
+]]>
+	  </example>
+	</rule>
+ 
+ 
+	<rule name="CommentContent" message="Rule Violation(GR6 or JR2): Invalid words or phrases found." class="net.sourceforge.pmd.lang.java.rule.comments.CommentContentRule">
+	  <description>
+A rule for the politically correct... we don't want to offend anyone.
+	  </description>
+	  <priority>3</priority>
+	  <example>
+      <![CDATA[
+//	OMG, this is horrible, Bob is an idiot !!!
+      ]]>
+	  </example>
+	</rule>
+   
+   
+	<rule  name="AvoidLiteralsInIfCondition" language="java" message="Rule Violation(GR9): Avoid using Literals in Conditional Statements" 
+		   class="net.sourceforge.pmd.lang.rule.XPathRule">
+      <description>
+Avoid using hard-coded literals in conditional statements. By declaring them as static variables
+or private members with descriptive names maintainability is enhanced. By default, the literals "-1" and "0" are ignored.
+More exceptions can be defined with the property "ignoreMagicNumbers".
+      </description>
+      <priority>3</priority>
+      <properties>
+        <property name="ignoreMagicNumbers" description="Comma-separated list of magic numbers, that should be ignored"
+          type="String" value="-1,0"/>
+        <property name="xpath">
+        <value>
+<![CDATA[
+//IfStatement/Expression/*/PrimaryExpression/PrimaryPrefix/Literal
+[not(NullLiteral)]
+[not(BooleanLiteral)]
+[empty(index-of(tokenize($ignoreMagicNumbers, ','), @Image))]
+]]>
+        </value>
+        </property>
+        <property name="version" value="2.0"/>
+      </properties>
+      <example>
+<![CDATA[
+private static final int MAX_NUMBER_OF_REQUESTS = 10;
+
+public void checkRequests() {
+
+    if (i == 10) {                        // magic number, buried in a method
+      doSomething();
+    }
+
+    if (i == MAX_NUMBER_OF_REQUESTS) {    // preferred approach
+      doSomething();
+    }
+
+    if (aString.indexOf('.') != -1) {}     // magic number -1, by default ignored
+    if (aString.indexOf('.') >= 0) { }     // alternative approach
+
+    if (aDouble > 0.0) {}                  // magic number 0.0
+    if (aDouble >= Double.MIN_VALUE) {}    // preferred approach
+}
+]]>
+	  </example>
+	</rule>
+   
+   
+    <rule name="DefaultLabelNotLastInSwitchStmt" language="java" message="Rule Violation(GR12): The default label should be the last label in a switch statement" 
+		  class="net.sourceforge.pmd.lang.rule.XPathRule">
+       <description>
+By convention, the default label should be the last label in a switch statement.
+       </description>
+       <priority>3</priority>
+         <properties>
+             <property name="xpath">
+                 <value>
+<![CDATA[
+//SwitchStatement
+ [not(SwitchLabel[position() = last()][@Default='true'])]
+ [SwitchLabel[@Default='true']]
+]]>
+                 </value>
+             </property>
+         </properties>
+       <example>
+   <![CDATA[
+public class Foo {
+  void bar(int a) {
+   switch (a) {
+    case 1:  // do something
+       break;
+    default:  // the default case should be last, by convention
+       break;
+    case 2:
+       break;
+   }
+  }
+}   ]]>
+       </example>
+    </rule>
+   
+   
+	<rule name="EmptyIfStmt" language="java" message="Rule Violation(GR14): Avoid empty if statement" class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>
+Empty If Statement finds instances where a condition is checked but nothing is done about it.
+    </description>
+        <example><![CDATA[
+    
+public class Foo {
+ void bar(int x) {
+  if (x == 0) {
+   // empty!
+  }
+ }
+}
+ 
+       ]]></example>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+
+//IfStatement/Statement
+ [EmptyStatement or Block[count(*) = 0]]
+ 
+              ]]></value>
+            </property>
+        </properties>
+    </rule>
+   
+   
+	<rule name="PackageCase" language="java" message="Rule Violation(JR1): Package name contains upper case characters"
+		  class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>
+Detects when a package definition contains uppercase characters.
+        </description>
+        <priority>3</priority>
+          <properties>
+              <property name="xpath">
+                  <value>
+                      <![CDATA[
+//PackageDeclaration/Name[lower-case(@Image)!=@Image]
+                      ]]>
+                  </value>
+              </property>
+          </properties>
+        <example>
+    <![CDATA[
+package com.MyCompany;  // should be lowercase name
+
+public class SomeClass {
+}
+    ]]>
+        </example>
+      </rule>
+	  
+	<rule name="ClassNamingConventions" message="Rule Violation(JR1): Class names should begin with an uppercase character" 
+		  class="net.sourceforge.pmd.lang.java.rule.naming.ClassNamingConventionsRule">
+      <description>
+Class names should always begin with an upper case character.
+      </description>
+      <priority>1</priority>
+      <example>
+<![CDATA[
+public class Foo {}
+]]>
+      </example>
+    </rule>
+   
+	<rule name="VariableNamingConventions" message="Rule Violation(JR1): {0} variable {1} should begin with {2}" 
+		  class="net.sourceforge.pmd.lang.java.rule.naming.VariableNamingConventionsRule">
+        <description>
+A variable naming conventions rule - customize this to your liking.  Currently, it
+checks for final variables that should be fully capitalized and non-final variables
+that should not include underscores.
+        </description>
+        <priority>1</priority>
+        <example>
+<![CDATA[
+public class Foo {
+   public static final int MY_NUM = 0;
+   public String myTest = "";
+   DataModule dmTest = new DataModule();
+}
+]]>
+        </example>
+    </rule>
+	
+	<rule name="MethodNamingConventions" message="Rule Violation(JR1): Method name does not begin with a lower case character." 
+		  class="net.sourceforge.pmd.lang.java.rule.naming.MethodNamingConventionsRule">
+          <description>
+Method names should always begin with a lower case character, and should not contain underscores.
+          </description>
+          <priority>1</priority>
+          <example>
+<![CDATA[
+public class Foo {
+	public void fooStuff() {
+	}
+}
+]]>
+          </example>
+    </rule>
+
+	
+	<rule name="DuplicateImports" language="java" message="Rule Violation(JR3): ''{0}'' import문이 중복 선언 되었음"
+		  class="net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule">
+        <description>
+    Avoid duplicate import statements.
+    </description>
+        <example><![CDATA[
+
+import java.lang.String;
+import java.lang.*;
+public class Foo {}
+
+    ]]></example>
+        <priority>1</priority>
+        <properties/>
+    </rule>
+
+	
+	<rule name="ConstructorCallsOverridableMethod" message="Rule Violation(JR5): Overridable {0} called during object construction"
+          class="net.sourceforge.pmd.lang.java.rule.design.ConstructorCallsOverridableMethodRule">
+      <description>
+Calling overridable methods during construction poses a risk of invoking methods on an incompletely
+constructed object and can be difficult to debug.
+It may leave the sub-class unable to construct its superclass or forced to replicate the construction
+process completely within itself, losing the ability to call super().  If the default constructor
+contains a call to an overridable method, the subclass may be completely uninstantiable.   Note that
+this includes method calls throughout the control flow graph - i.e., if a constructor Foo() calls a
+private method bar() that calls a public method buz(), this denotes a problem.
+      </description>
+        <priority>1</priority>
+      <example>
+  <![CDATA[
+public class SeniorClass {
+  public SeniorClass(){
+      toString(); //may throw NullPointerException if overridden
+  }
+  public String toString(){
+    return "IAmSeniorClass";
+  }
+}
+public class JuniorClass extends SeniorClass {
+  private String name;
+  public JuniorClass(){
+    super(); //Automatic call leads to NullPointerException
+    name = "JuniorClass";
+  }
+  public String toString(){
+    return name.toUpperCase();
+  }
+}
+  ]]>
+      </example>
+    </rule>
+	
+	
+	<rule name="AvoidUsingVolatile" language="java" message="Rule Violation(JR9): Use of modifier volatile is not recommended."
+		  class="net.sourceforge.pmd.lang.rule.XPathRule">
+		<description>
+            <![CDATA[
+Use of the keyword 'volatile' is generally used to fine tune a Java application, and therefore, requires
+a good expertise of the Java Memory Model. Moreover, its range of action is somewhat misknown. Therefore,
+the volatile keyword should not be used for maintenance purpose and portability.
+            ]]>
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                        //FieldDeclaration[
+                                contains(@Volatile,'true')
+                        ]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+      <example>
+      <![CDATA[
+public class ThrDeux {
+  private volatile String var1;	// not suggested
+  private          String var2;	// preferred
+}
+      ]]>
+      </example>
+	</rule>
+
+	
+	<rule name="UnusedNullCheckInEquals" language="java" message="Rule Violation(JR11): Invoke equals() on the object you''ve already ensured is not null"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+      <description>
+After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
+      </description>
+	  <priority>3</priority>
+      <properties>
+        <property name="xpath">
+        <value>
+        <![CDATA[
+(//PrimaryPrefix[ends-with(Name/@Image, '.equals') and Name/@Image != 'Arrays.equals'] | //PrimarySuffix[@Image='equals' and not(../PrimaryPrefix/Literal)])
+ /following-sibling::PrimarySuffix/Arguments/ArgumentList/Expression
+ /PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix
+ /Name[@Image = ./../../../../../../../../../../Expression/ConditionalAndExpression
+ /EqualityExpression[@Image="!=" and count(./preceding-sibling::*)=0 and
+ ./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+  /PrimaryExpression/PrimaryPrefix/Name/@Image]
+        ]]>
+        </value>
+         </property>
+      </properties>
+	  <example>
+		<![CDATA[
+public class Test {
+
+  public String method1() { return "ok";}
+  public String method2() { return null;}
+
+  public void method(String a) {
+    String b;
+	// I don't know it method1() can be "null"
+	// but I know "a" is not null..
+	// I'd better write a.equals(method1())
+	
+	if (a!=null && method1().equals(a)) { // will trigger the rule
+	//whatever
+	}
+	
+	if (method1().equals(a) && a != null) { // won't trigger the rule
+	//whatever
+	}
+	
+	if (a!=null && method1().equals(b)) { // won't trigger the rule
+	//whatever
+	}
+	
+	if (a!=null && "LITERAL".equals(a)) { // won't trigger the rule
+	//whatever
+	}
+	
+	if (a!=null && !a.equals("go")) { // won't trigger the rule
+	a=method2();
+	if (method1().equals(a)) {
+	//whatever
+	}
+  }
+}
+}
+				]]>
+	  </example>
+	</rule>
+	
+	<rule name="NullAssignment" message="Rule Violation(JR11): Assigning an Object to null is a code smell.  Consider refactoring."
+          class="net.sourceforge.pmd.lang.java.rule.controversial.NullAssignmentRule">
+      <description>
+Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, this type
+of assignment is an indication that the programmer doesn't completely understand what is going on in the code.
+
+NOTE: This sort of assignment may used in some cases to dereference objects and encourage garbage collection.
+      </description>
+        <priority>3</priority>
+      <example>
+ <![CDATA[
+public void bar() {
+  Object x = null; // this is OK
+  x = new Object();
+     // big, complex piece of code here
+  x = null; // this is not required
+     // big, complex piece of code here
+}
+
+ ]]>
+      </example>
+    </rule>
+
+	
+	<rule	name="DoNotCallGarbageCollectionExplicitly" language="java" message="Rule Violation(JR14): Do not explicitly trigger a garbage collection."
+            class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>
+          <![CDATA[
+Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the
+same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
+Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
+leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
+      ]]>
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//Name[
+(starts-with(@Image, 'System.') and
+(starts-with(@Image, 'System.gc') or
+starts-with(@Image, 'System.runFinalization'))) or
+(
+starts-with(@Image,'Runtime.getRuntime') and
+../../PrimarySuffix[ends-with(@Image,'gc')]
+)
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class GCCall {
+    public GCCall() {
+        // Explicit gc call !
+        System.gc();
+    }
+
+    public void doSomething() {
+        // Explicit gc call !
+        Runtime.getRuntime().gc();
+    }
+
+    public explicitGCcall() {
+        // Explicit gc call !
+        System.gc();
+    }
+
+    public void doSomething() {
+        // Explicit gc call !
+        Runtime.getRuntime().gc();
+    }
+}
+      ]]>
+    </example>
+  </rule>
+ 
+ 
+ <rule	name="CloseResource" message="Rule Violation(JR15): Ensure that resources like this {0} object are closed after use"
+	    class="net.sourceforge.pmd.lang.java.rule.design.CloseResourceRule">
+    <description>
+Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
+public class Bar {
+  public void foo() {
+    Connection c = pool.getConnection();
+    try {
+      // do stuff
+    } catch (SQLException ex) {
+     // handle exception
+    } finally {
+      // oops, should close the connection using 'close'!
+      // c.close();
+    }
+  }
+}
+]]>
+    </example>
+  </rule> 
+	
+	
+	<rule	name="DoNotUseThreads"	language="java"
+			message="Rule Violation(JR17): To be compliant to J2EE, a webapp should not use any thread."
+			class="net.sourceforge.pmd.lang.rule.XPathRule">
+		<description>
+            <![CDATA[
+The J2EE specification explicitly forbids the use of threads.
+            ]]>
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                        //ClassOrInterfaceType[@Image = 'Thread' or @Image = 'Runnable']
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            	<![CDATA[
+            // This is not allowed
+public class UsingThread extends Thread {
+
+ }
+	// Neither this,
+public class OtherThread implements Runnable {
+	// Nor this ...
+	public void methode() {
+			Runnable thread = new Thread(); thread.run();
+	}
+}
+				]]>
+		</example>
+	</rule>
+	
+	
+	<rule name="UseProperClassLoader"	language="java"	
+		  message="Rule Violation(JR18): In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead."
+		  class="net.sourceforge.pmd.lang.rule.XPathRule">
+   <description>
+In J2EE, the getClassLoader() method might not work as expected. Use 
+Thread.currentThread().getContextClassLoader() instead.
+   </description>
+   <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//PrimarySuffix[@Image='getClassLoader']
+ ]]>
+              </value>
+          </property>
+      </properties>
+   <example>
+<![CDATA[
+public class Foo {
+ ClassLoader cl = Bar.class.getClassLoader();
+}
+]]>
+  </example>
+ </rule>
+
+ 
+ <rule name="MissingSerialVersionUID"	language="java"	
+		  message="Rule Violation(JR19): Classes implementing Serializable should set a serialVersionUID"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+      <description>
+Serializable classes should provide a serialVersionUID field.
+      </description>
+      <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//ClassOrInterfaceDeclaration
+ [
+  count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+   /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Image='serialVersionUID']) = 0
+and
+  count(ImplementsList
+   [ClassOrInterfaceType/@Image='Serializable'
+   or ClassOrInterfaceType/@Image='java.io.Serializable']) =1
+and
+   @Abstract = 'false'
+]
+]]>
+              </value>
+          </property>
+      </properties>
+      <example>
+<![CDATA[
+public class Foo implements java.io.Serializable {
+ String name;
+ // Define serialization id to avoid serialization related bugs
+ // i.e., public static final long serialVersionUID = 4328743;
+}
+
+]]>
+          </example>
+    </rule>
+
+
+</ruleset>

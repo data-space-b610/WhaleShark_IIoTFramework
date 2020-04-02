@@ -1,0 +1,11 @@
+include autosparkml/config.conf
+
+graft autosparkml/bridge/ksb
+graft autosparkml/datasets/boston_dataset
+graft autosparkml/datasets/diabetes_dataset
+graft autosparkml/datasets/digits_dataset
+graft autosparkml/datasets/iris_dataset
+
+prune autosparkml/test
+recursive-exclude * __pycache__
+global-exclude *.py[co] .DS_Store

@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package ksb.csle.custom.proto;
+
+message GroupbyInfo {
+    required string keyColName = 1;
+    required string valColName = 2;
+    enum GroupbyOp {
+      SUM = 0;
+      COUNT = 1;
+    }
+    required GroupbyOp groupby = 3;
+}
