@@ -22,7 +22,7 @@
     <cdap.version>3.6.0</cdap.version>
     <maven.version.min>3.0.5</maven.version.min>
     <scala.minor.version>2.11</scala.minor.version>
-    <scala.complete.version>2.11.1</scala.complete.version>
+    <scala.complete.version>2.13.1</scala.complete.version>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <protobuf.version>3.5.0</protobuf.version>
     <protobuf.util.version>3.5.0</protobuf.util.version>
