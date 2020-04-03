@@ -18,18 +18,25 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>ksb</groupId>
-      <artifactId>ksb-core_2.11</artifactId>
-      <version>${project.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.google.protobuf</groupId>
-          <artifactId>protobuf-java</artifactId>
-        </exclusion>
-      </exclusions>
-    <scope>system</scope>
-     <systemPath>${project.basedir}/../libs/ksb-core_2.11-${project.version}.jar</systemPath>
+		<groupId>ksb</groupId>
+		<artifactId>ksb-core_2.11</artifactId>
+		<version>${project.version}</version>
+		<!-- <exclusions>
+		  <exclusion>
+		    <groupId>com.google.protobuf</groupId>
+		    <artifactId>protobuf-java</artifactId>
+		  </exclusion>
+		</exclusions> -->
+		<scope>system</scope>
+		<systemPath>${project.basedir}/../libs/ksb-core_2.11-${project.version}.jar</systemPath>
     </dependency>
+    
+	<dependency>
+	    <groupId>com.google.protobuf</groupId>
+	    <artifactId>protobuf-java</artifactId>
+	    <version>3.11.4</version>
+	</dependency>
+    
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-streaming-kafka-0-10_${scala.minor.version}</artifactId>
